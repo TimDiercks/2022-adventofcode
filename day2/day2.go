@@ -22,9 +22,48 @@ const (
 )
 
 func main() {
-	opponentsChoice, ownChoice := readInput("input.txt")
-	score := computeGameScore(ownChoice, opponentsChoice)
-	fmt.Printf("You've got %d points after your game.\n", score)
+	opponentsChoices, ownChoices := readInput("input.txt")
+	score := computeGameScore(ownChoices, opponentsChoices)
+	fmt.Printf("Task 1: You've got %d points after your game.\n", score)
+	score = computeTask2(opponentsChoices, ownChoices)
+	fmt.Printf("Task 2: You've got %d points after your game.\n", score)
+}
+
+func computeTask2(opponentsChoices, rightChoices []string) int {
+	var score int
+	index := 0
+
+	for index < len(rightChoices) {
+		opponentsChoice, err := inputToMove(opponentsChoices[index])
+		if err != nil {
+			panic(err)
+		}
+		ownChoice := ""
+		if rightChoices[index] == "Y" { // DRAW
+			ownChoice = opponentsChoice
+		} else if rightChoices[index] == "X" { // LOSE
+			if opponentsChoice == ROCK {
+				ownChoice = SCISSOR
+			} else if opponentsChoice == PAPER {
+				ownChoice = ROCK
+			} else if opponentsChoice == SCISSOR {
+				ownChoice = PAPER
+			}
+		} else if rightChoices[index] == "Z" { // WIN
+			if opponentsChoice == ROCK {
+				ownChoice = PAPER
+			} else if opponentsChoice == PAPER {
+				ownChoice = SCISSOR
+			} else if opponentsChoice == SCISSOR {
+				ownChoice = ROCK
+			}
+		}
+
+		score += computeRoundScore(ownChoice, opponentsChoice)
+		index++
+	}
+
+	return score
 }
 
 func computeGameScore(ownChoices, opponentsChoices []string) int {
