@@ -1,6 +1,8 @@
 package utils
 
-import "errors"
+import (
+	"errors"
+)
 
 type Stack []byte
 
@@ -31,6 +33,20 @@ func (s *Stack) Pop() (byte, error) {
 	element := (*s)[topIndex]
 	*s = (*s)[:topIndex]
 	return element, nil
+}
+
+func (s *Stack) PushArray(items []byte) {
+	*s = append(*s, items...)
+}
+
+func (s *Stack) PopArray(amount int) ([]byte, error) {
+	if len(*s) < amount {
+		return []byte{}, errors.New("Not enough items")
+	}
+	topIndex := len(*s) - 1
+	elements := (*s)[topIndex-amount+1 : topIndex+1]
+	*s = (*s)[:topIndex-amount+1]
+	return elements, nil
 }
 
 func (s *Stack) IsEmpty() bool {

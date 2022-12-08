@@ -21,8 +21,11 @@ type moveOperation struct {
 
 func main() {
 	ship, moveOperations := readInput("input.txt")
-	ship = moveItems(ship, moveOperations)
+	moveItems(ship, moveOperations)
 	fmt.Printf("Solution for Task 1: %s\n", getTopStackString(ship))
+	ship, _ = readInput("input.txt")
+	moveItemsFull(ship, moveOperations)
+	fmt.Printf("Solution for Task 2: %s\n", getTopStackString(ship))
 }
 
 func getTopStackString(ship ship) string {
@@ -34,6 +37,15 @@ func getTopStackString(ship ship) string {
 		result += string(item)
 	}
 	return result
+}
+
+func moveItemsFull(ship ship, moves []moveOperation) ship {
+	for _, move := range moves {
+		items, err := ship.stacks[move.from].PopArray(move.amount)
+		checkError(err)
+		ship.stacks[move.to].PushArray(items)
+	}
+	return ship
 }
 
 func moveItems(ship ship, moves []moveOperation) ship {
